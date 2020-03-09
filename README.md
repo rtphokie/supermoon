@@ -1,5 +1,5 @@
 Finds instances of supermoon.  For more information see the [wikipedia page on the subject](https://en.wikipedia.org/wiki/Supermoon).
-'''
+```
 usage: supermoon [-h] [--cnt CNT] [-P] [-B] [year] [endyear]
 
 positional arguments:
@@ -11,7 +11,7 @@ optional arguments:
   --cnt CNT      moons to show
   -P, --perigee  include perigee time
   -B, --brief    brief output
-'''
+```
 
 Definitions used:
 * Richard Nole (coined the term in 1979): A full or new Moon occurring at a 
@@ -28,10 +28,8 @@ Definitions used:
 * TimeandDate.com (Norwegian company offering website and data services on 
   time and astronomy)- A full Moon within 360,000 kilometres (223,694 mi) 
   [source](https://www.timeanddate.com/astronomy/moon/super-full-moon.html)
-    
-    
-
-'''
+* additionally, full moons occurring within 24 hours of perigee have been labeled as supermoons    
+```
 4 supermoons during 2020:
   Sun 02/09/2020 02:33 AM EST (07:33 UTC) according to Espenak
    perigee: 02/10/2020 15:27 EST (36.91 hours from full moon)
@@ -41,4 +39,4 @@ Definitions used:
    perigee: 04/07/2020 14:08 EDT (8.44 hours from full moon)
   Thu 05/07/2020 06:45 AM EDT (10:45 UTC) according to EarthSky, Espenak, and, Nolle
    perigee: 05/05/2020 23:02 EDT (31.71 hours from full moon)
-'''
+```
