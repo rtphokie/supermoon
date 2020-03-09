@@ -1,3 +1,4 @@
 skyfield>=1.11
 pytz
 scipy
+tzlocal

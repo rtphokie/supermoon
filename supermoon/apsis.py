@@ -30,7 +30,7 @@ def next_apsis(dt=datetime.now(), days=30, extrema='min'):
     t = ts.utc(dt.year, dt.month, dt.day, dt.hour, dt.minute, range(dt.second-60, dt.second+60))
     dt, d = _find_apsis(earth, moon, t, extrema)
 
-    return dt, d
+    return dt, round(d,0)
 
 def _find_apsis(earth, moon, t, extrema):
     dt = None

@@ -1,10 +1,6 @@
 from skyfield import almanac
+from datetime import timedelta
 from skyfield.api import Loader
-from datetime import datetime, timedelta, date
-from skyfield.api import Loader, Topos
-from supermoon import apsis
-import pytz
-from pprint import pprint
 
 load = Loader('~/Documents/data')
 e = load('de421.bsp')
