@@ -1,4 +1,0 @@
-# these modules are needed only when running unit tests
-beautifulsoup4
-requests
-requests_cache
