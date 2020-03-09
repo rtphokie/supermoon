@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''
 In general, a supermoon is a full moon which occurs near the closest point in its orbit making it appear
 bigger and brighter. However, there is no official nor even consistent definition for the concept of 
@@ -24,9 +25,7 @@ from apsis import next_perigee, next_apogee
 from datetime import datetime, tzinfo, timedelta
 from skyfield.api import utc
 from tzlocal import get_localzone
-import operator
-import functools
-from pprint import pprint
+import sys
 import simple_cache
 import argparse
 
@@ -99,10 +98,12 @@ def yearly_supermoons(year):
             thelist.insert(-1, 'and')
         print (f"  {msgstr} according to {', '.join(thelist)}")
 
-def main(dt,moons=1):
+def main(dt,moons=1, year=None):
     for i in range(1,moons+1):
         result = next_supermoon(dt=dt)
-        msgstr = f"{result['fullmoon']['localdate'].strftime('%a %m %d %Y %I:%M %p %Z')} ({result['fullmoon']['date'].strftime('%H:%M %Z')})"
+        if year is not None and result['fullmoon']['date'].year != year:
+            break
+        msgstr = f"{result['fullmoon']['localdate'].strftime('%a %m/%d/%Y %I:%M %p %Z')} ({result['fullmoon']['date'].strftime('%H:%M %Z')})"
         thelist = []
         for definition, meets in result['definitions'].items():
             if meets:
@@ -139,30 +140,19 @@ Supermoon definitions used:
     args = parser.parse_args()
 
     if args.year is None:
-        if args.cnt > 1:
-            print ("The next supermoon will be:")
-        else:
+        if args.cnt < 1:
+            print (f"expecting count of 1 or more, got {args.cnt}")
+            sys.exit(1)
+        elif args.cnt > 1:
             print (f"The next {args.cnt} supermoons will be:")
+        else:
+            print("The next supermoon will be:")
         main(dt=None, moons=args.cnt)
-
-    import sys
-    sys.exit(0)
-
-    result = next_supermoon(dt=None)
-    msgstr = f"{result['fullmoon']['localdate'].strftime('%a %b %d %Y %I:%M %p %Z')} ({result['fullmoon']['date'].strftime('%H:%M %Z')})"
-    print (f"The next supermoon will occur on {msgstr}" )
-    print("The next 8 supermoons are")
-    # dt = result['fullmoon']['date']
-    for i in range(0,12):
-        result = next_supermoon(dt=result['fullmoon']['date']+timedelta(days=1))
-        msgstr = f"{result['fullmoon']['localdate'].strftime('%a %m %d %Y %I:%M %p %Z')} ({result['fullmoon']['date'].strftime('%H:%M %Z')})"
-        thelist = []
-        for definition, meets in result['definitions'].items():
-            if meets:
-               thelist.append(definition)
-        if len(thelist) == len(result['definitions'].values()):
-            thelist = ['all known definitions']
-        elif len(thelist) > 1:
-            thelist.insert(-1, 'and')
-        print (f"  {msgstr} according to {', '.join(thelist)}")
-
+    else:
+        if 1900 <= args.year <= 2050:
+            print (f"Supermoons during {args.year}:")
+            jan1 = datetime(year=args.year, month=1, day=1, hour=0, minute=0, tzinfo=utc)
+            main(dt=jan1, moons=13, year=args.year)
+        else:
+            print (f"Please provide a year between 1900 and 2050, got {args.year} (per JPL DE421) ")
+            sys.exit(1)
