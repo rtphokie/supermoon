@@ -3,7 +3,7 @@ Finds instances of supermoon.  For more information see the [wikipedia page on t
 usage: supermoon [-h] [--cnt CNT] [-P] [-B] [year] [endyear]
 
 positional arguments:
-  year           find supermoons for this year (optional)
+  year           find supermoons for this year (optional, defaults to current date forward)
   endyear        stop finding supermoons for this year (optional)
 
 optional arguments:

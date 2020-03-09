@@ -116,7 +116,7 @@ Supermoon definitions used:
     '''
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter,
                                      epilog=helpmsg)
-    parser.add_argument('year', type=int, nargs='?', default=None, help='find supermoons for this year (optional)')
+    parser.add_argument('year', type=int, nargs='?', default=None, help='find supermoons for this year (optional, defaults to current date forward)')
     parser.add_argument('--cnt', type=int, default=1, help='moons to show')
     parser.add_argument('-P', '--perigee', action='store_const', default=False, const=True,  help='include perigee time')
     args = parser.parse_args()
