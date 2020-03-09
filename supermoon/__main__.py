@@ -67,7 +67,7 @@ def next_supermoon(dt=None):
                    'within 1 day of perigee': perigeedelta <= 86400.0,},
                'relative distance': {'thisorbit': RelativeDistance_thisorbit,
                                      'thisyear': RelativeDistance_thisyear,},
-               'fullmoon': {'date': DATEfm, 'localdate': DATEfm.astimezone(get_localzone())},
+               'fullmoon': {'date': DATEfm, 'localdate': DATEfm.astimezone(get_localzone()), 'distance': Dfm},
                'perigee': {'date': DATEp, 'localdate': DATEp.astimezone(get_localzone()), 'distance': Dp},
                'full perigee delta seconds': perigeedelta,
                'full perigee delta hours': perigeedelta/3600,
@@ -76,7 +76,7 @@ def next_supermoon(dt=None):
         results = next_supermoon(dt=dt+timedelta(days=29))
     return (results)
 
-def main(dt,moons=1, year=None, perigee=None):
+def main(dt,moons=1, year=None, perigee=False, distance=False):
     for i in range(1,moons+1):
         result = next_supermoon(dt=dt)
         if year is not None and result['fullmoon']['date'].year != year:
@@ -93,8 +93,12 @@ def main(dt,moons=1, year=None, perigee=None):
         print (f"  {msgstr} according to {', '.join(thelist)}")
         dt = result['fullmoon']['date']+timedelta(days=29)
         # pprint(result)
+        if distance:
+            print(f"   full moon distance: {result['fullmoon']['distance']:,} km {result['fullmoon']['distance']*0.621371:,.1f} mi)")
         if perigee:
             print(f"   perigee: {result['perigee']['localdate'].strftime('%m/%d/%Y %H:%M %Z')} ({result['full perigee delta hours']:.2f} hours from full moon)")
+        if perigee and distance:
+            print(f"   perigee distance: {result['perigee']['distance']:,} km {result['perigee']['distance']*0.621371:,.1f} mi)")
 
 if __name__ == '__main__':
     helpmsg = '''
@@ -119,6 +123,7 @@ Supermoon definitions used:
     parser.add_argument('year', type=int, nargs='?', default=None, help='find supermoons for this year (optional, defaults to current date forward)')
     parser.add_argument('--cnt', type=int, default=1, help='moons to show')
     parser.add_argument('-P', '--perigee', action='store_const', default=False, const=True,  help='include perigee time')
+    parser.add_argument('-D', '--distance', action='store_const', default=False, const=True,  help='include distances')
     args = parser.parse_args()
 
     if args.year is None:
@@ -129,12 +134,12 @@ Supermoon definitions used:
             print (f"The next {args.cnt} supermoons will be:")
         else:
             print("The next supermoon will be:")
-        main(dt=None, moons=args.cnt, perigee=args.perigee)
+        main(dt=None, moons=args.cnt, perigee=args.perigee, distance=args.distance)
     else:
         if 1900 <= args.year <= 2050:
             print (f"Supermoons during {args.year}:")
             jan1 = datetime(year=args.year, month=1, day=1, hour=0, minute=0, tzinfo=utc)
-            main(dt=jan1, moons=13, year=args.year, perigee=args.perigee)
+            main(dt=jan1, moons=13, year=args.year, perigee=args.perigee, distance=args.distance)
         else:
             print (f"Please provide a year between 1900 and 2050, got {args.year} (per JPL DE421) ")
             sys.exit(1)
