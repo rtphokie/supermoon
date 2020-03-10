@@ -83,6 +83,8 @@ def main(dt,moons=1, year=None, perigee=False, distance=False):
         if year is not None and result['fullmoon']['date'].year != year:
             break
         msgstr = f"{result['fullmoon']['localdate'].strftime('%a %m/%d/%Y %I:%M %p %Z')} ({result['fullmoon']['date'].strftime('%H:%M %Z')})"
+        if distance:
+            msgstr+=f" {result['fullmoon']['distance']:,} km ({result['fullmoon']['distance']*0.621371:,.1f} mi)"
         thelist = []
         for definition, meets in result['definitions'].items():
             if meets:
@@ -94,12 +96,11 @@ def main(dt,moons=1, year=None, perigee=False, distance=False):
         lines.append(f"  {msgstr} according to {', '.join(thelist)}")
         dt = result['fullmoon']['date']+timedelta(days=29)
         # pprint(result)
-        if distance:
-            lines.append(f"   full moon distance: {result['fullmoon']['distance']:,} km {result['fullmoon']['distance']*0.621371:,.1f} mi)")
         if perigee:
-            lines.append(f"   perigee: {result['perigee']['localdate'].strftime('%m/%d/%Y %H:%M %Z')} ({result['full perigee delta hours']:.2f} hours from full moon)")
-        if perigee and distance:
-            lines.append(f"   perigee distance: {result['perigee']['distance']:,} km {result['perigee']['distance']*0.621371:,.1f} mi)")
+            distmsgstr = f"   perigee: {result['perigee']['localdate'].strftime('%m/%d/%Y %H:%M %Z')} ({result['full perigee delta hours']:.2f} hours from full moon)"
+            if distance:
+                distmsgstr+=f" {result['perigee']['distance']:,} km ({result['perigee']['distance']*0.621371:,.1f} mi)"
+            lines.append(distmsgstr)
     return lines
 
 if __name__ == '__main__':
@@ -129,6 +130,8 @@ Supermoon definitions used:
     parser.add_argument('-P', '--perigee', action='store_const', default=False, const=True,  help='include perigee time')
     parser.add_argument('-D', '--distance', action='store_const', default=False, const=True,  help='include distances')
     args = parser.parse_args()
+    if args.endyear is None and args.year is not None:
+        args.endyear = args.year
 
     if args.year is None:
         lines = main(dt=None, moons=args.cnt, perigee=args.perigee, distance=args.distance)
@@ -142,13 +145,11 @@ Supermoon definitions used:
         else:
             print("The next supermoon will be:")
             print ("\n".join(lines))
-    elif args.endyear is not None:
+    elif args.year is not None:
         for year in range(args.year, args.endyear+1):
             jan1 = datetime(year=year, month=1, day=1, hour=0, minute=0, tzinfo=utc)
             lines =  main(dt=jan1, moons=13, year=year, perigee=args.perigee, distance=args.distance)
-            if args.perigee and args.distance:
-                cnt = len(lines)/4
-            elif args.perigee or args.distance:
+            if args.distance:
                 cnt = len(lines)/2
             else:
                 cnt = len(lines)
