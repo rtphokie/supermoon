@@ -37,6 +37,6 @@ Definitions used:
    perigee: 03/10/2020 02:29 EDT (12.70 hours from full moon)
   Tue 04/07/2020 10:35 PM EDT (02:35 UTC) according to all known definitions
    perigee: 04/07/2020 14:08 EDT (8.44 hours from full moon)
-  Thu 05/07/2020 06:45 AM EDT (10:45 UTC) according to EarthSky, Espenak, and, Nolle
+  Thu 05/07/2020 06:45 AM EDT (10:45 UTC) according to EarthSky, Espenak, and Nolle
    perigee: 05/05/2020 23:02 EDT (31.71 hours from full moon)
 ```
