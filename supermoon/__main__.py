@@ -20,8 +20,8 @@ Known definitions are calculated here
   * TimeandDate.com  - A full Moon within 360,000 kilometres (223,694 mi) of Earth
     https://www.timeanddate.com/astronomy/moon/super-full-moon.html, https://www.timeanddate.com/moon/phases/
 '''
-from lunarphases import next_full_moon
-from apsis import next_perigee, next_apogee
+from supermoon.lunarphases import next_full_moon
+from supermoon.apsis import next_perigee, next_apogee
 from datetime import datetime, tzinfo, timedelta
 from skyfield.api import utc
 from tzlocal import get_localzone

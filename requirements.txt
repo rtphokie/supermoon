@@ -1,4 +1,5 @@
 skyfield>=1.11
+simple_cache
 pytz
 scipy
 tzlocal
