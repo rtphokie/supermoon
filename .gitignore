@@ -6,4 +6,4 @@ rtphokie.egg-info
 venv
 *.bsp
 Leap_Second.dat
-tests/*html
+**html

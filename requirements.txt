@@ -1,5 +1,11 @@
+wheel
 skyfield>=1.11
 simple_cache
 pytz
 scipy
 tzlocal
+# for tests
+bs4
+lxml
+requests
+requests_cache
