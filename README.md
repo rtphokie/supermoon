@@ -30,6 +30,12 @@ Definitions used:
   [source](https://www.timeanddate.com/astronomy/moon/super-full-moon.html)
 * additionally, full moons occurring within 24 hours of perigee have been labeled as supermoons    
 ```
+4 supermoons during 2021:
+  Sun 03/28/2021 02:48 PM EDT (18:48 UTC) according to Espenak
+  Mon 04/26/2021 11:31 PM EDT (03:31 UTC) according to all known definitions
+  Wed 05/26/2021 07:13 AM EDT (11:13 UTC) according to all known definitions
+  Thu 06/24/2021 02:39 PM EDT (18:39 UTC) according to EarthSky, Espenak, and, Nolle
+
 4 supermoons during 2020:
   Sun 02/09/2020 02:33 AM EST (07:33 UTC) according to Espenak
    perigee: 02/10/2020 15:27 EST (36.91 hours from full moon)
