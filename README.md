@@ -31,10 +31,15 @@ Definitions used:
 * additionally, full moons occurring within 24 hours of perigee have been labeled as supermoons    
 ```
 4 supermoons during 2021:
-  Sun 03/28/2021 02:48 PM EDT (18:48 UTC) according to Espenak
-  Mon 04/26/2021 11:31 PM EDT (03:31 UTC) according to all known definitions
-  Wed 05/26/2021 07:13 AM EDT (11:13 UTC) according to all known definitions
-  Thu 06/24/2021 02:39 PM EDT (18:39 UTC) according to EarthSky, Espenak, and, Nolle
+  Sun 03/28/2021 02:48 PM EDT (18:48 UTC) 362,173.8 km (225,044.3 mi) according to Espenak
+   perigee: 03/30/2021 02:15 EDT (35.46 hours from full moon) 360,309.0 km (223,885.6 mi)
+  Mon 04/26/2021 11:31 PM EDT (03:31 UTC) 357,616.1 km (222,212.3 mi) according to all known definitions
+   perigee: 04/27/2021 11:22 EDT (11.85 hours from full moon) 357,378.0 km (222,064.3 mi)
+  Wed 05/26/2021 07:13 AM EDT (11:13 UTC) 357,461.0 km (222,115.9 mi) according to all known definitions
+   perigee: 05/25/2021 21:49 EDT (9.40 hours from full moon) 357,311.0 km (222,022.7 mi)
+  Thu 06/24/2021 02:39 PM EDT (18:39 UTC) 361,560.8 km (224,663.4 mi) according to EarthSky, Espenak, and, Nolle
+   perigee: 06/23/2021 05:54 EDT (32.75 hours from full moon) 359,956.0 km (223,666.2 mi)
+
 
 4 supermoons during 2020:
   Sun 02/09/2020 02:33 AM EST (07:33 UTC) according to Espenak
