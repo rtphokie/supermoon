@@ -31,23 +31,28 @@ Definitions used:
 * additionally, full moons occurring within 24 hours of perigee have been labeled as supermoons    
 ```
 4 supermoons during 2021:
-  Sun 03/28/2021 02:48 PM EDT (18:48 UTC) 362,173.8 km (225,044.3 mi) according to Espenak
-   perigee: 03/30/2021 02:15 EDT (35.46 hours from full moon) 360,309.0 km (223,885.6 mi)
-  Mon 04/26/2021 11:31 PM EDT (03:31 UTC) 357,616.1 km (222,212.3 mi) according to all known definitions
-   perigee: 04/27/2021 11:22 EDT (11.85 hours from full moon) 357,378.0 km (222,064.3 mi)
-  Wed 05/26/2021 07:13 AM EDT (11:13 UTC) 357,461.0 km (222,115.9 mi) according to all known definitions
-   perigee: 05/25/2021 21:49 EDT (9.40 hours from full moon) 357,311.0 km (222,022.7 mi)
-  Thu 06/24/2021 02:39 PM EDT (18:39 UTC) 361,560.8 km (224,663.4 mi) according to EarthSky, Espenak, and, Nolle
-   perigee: 06/23/2021 05:54 EDT (32.75 hours from full moon) 359,956.0 km (223,666.2 mi)
+  Sun 03/28/2021 02:48 PM EDT (18:48 UTC) according to Espenak
+  Mon 04/26/2021 11:31 PM EDT (03:31 UTC) according to all known definitions
+  Wed 05/26/2021 07:13 AM EDT (11:13 UTC) according to all known definitions
+  Thu 06/24/2021 02:39 PM EDT (18:39 UTC) according to EarthSky, Espenak, and, Nolle
+4 supermoons during 2022:
+  Mon 05/16/2022 12:14 AM EDT (04:14 UTC) according to Espenak, and, Nolle
+  Tue 06/14/2022 07:51 AM EDT (11:51 UTC) according to all known definitions
+  Wed 07/13/2022 02:37 PM EDT (18:37 UTC) according to all known definitions
+  Thu 08/11/2022 09:35 PM EDT (01:35 UTC) according to EarthSky, Espenak, and, Nolle
+4 supermoons during 2023:
+  Mon 07/03/2023 07:38 AM EDT (11:38 UTC) according to Espenak
+  Tue 08/01/2023 02:31 PM EDT (18:31 UTC) according to all known definitions
+  Wed 08/30/2023 09:35 PM EDT (01:35 UTC) according to all known definitions
+  Fri 09/29/2023 05:57 AM EDT (09:57 UTC) according to EarthSky, Espenak, and, Nolle
+4 supermoons during 2024:
+  Mon 08/19/2024 02:25 PM EDT (18:25 UTC) according to Espenak
+  Tue 09/17/2024 10:34 PM EDT (02:34 UTC) according to all known definitions
+  Thu 10/17/2024 07:26 AM EDT (11:26 UTC) according to all known definitions
+  Fri 11/15/2024 04:28 PM EST (21:28 UTC) according to EarthSky, and, Espenak
+3 supermoons during 2025:
+  Mon 10/06/2025 11:47 PM EDT (03:47 UTC) according to EarthSky, Espenak, and, Nolle
+  Wed 11/05/2025 08:19 AM EST (13:19 UTC) according to all known definitions
+  Thu 12/04/2025 06:14 PM EST (23:14 UTC) according to all known definitions
 
-
-4 supermoons during 2020:
-  Sun 02/09/2020 02:33 AM EST (07:33 UTC) according to Espenak
-   perigee: 02/10/2020 15:27 EST (36.91 hours from full moon)
-  Mon 03/09/2020 01:47 PM EDT (17:47 UTC) according to all known definitions
-   perigee: 03/10/2020 02:29 EDT (12.70 hours from full moon)
-  Tue 04/07/2020 10:35 PM EDT (02:35 UTC) according to all known definitions
-   perigee: 04/07/2020 14:08 EDT (8.44 hours from full moon)
-  Thu 05/07/2020 06:45 AM EDT (10:45 UTC) according to EarthSky, Espenak, and Nolle
-   perigee: 05/05/2020 23:02 EDT (31.71 hours from full moon)
 ```
