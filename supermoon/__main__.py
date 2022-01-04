@@ -12,9 +12,7 @@ Known definitions are calculated here
                       https://www.astropro.com/features/articles/supermoon/
       rule 3 (2011) - A full or new Moon occurring at a distance 90% or greater than the closest perigee for the calendar year.  This definition is also [preferred by EarthSky.com](https://earthsky.org/astronomy-essentials/why-experts-disagree-on-what-makes-a-supermoon#nolle)
                       https://www.astropro.com/features/tables/cen21ce/suprmoon.html
-  * EarthSky - A full or new Moon occuring at a distance 90% percent (or greater) of the moon’s closest approach to Earth” by the year’s closest perigee and farthest apogee" this is an interpretation of Nolle's 3rd version, 
-    http://earthsky.org/astronomy-essentials/why-experts-disagree-on-what-makes-a-supermoon#nolle
-  * Fred Espenak - A full or new  Moon occurring at a distance 90% or greater of perigee during the current lunation.
+  * Fred Espenak - A full or new  Moon occurring at a distance 90% or greater of perigee during the current lunation, also used by Earth Sky
     http://astropixels.com/ephemeris/moon/fullperigee2001.html
   * Sky and Telescope magazine  -  A full Moon within 223,000 miles (358,884 km) of Earth
   * TimeandDate.com  - A full Moon within 360,000 kilometres (223,694 mi) of Earth
@@ -60,7 +58,7 @@ def next_supermoon(dt=None):
     # time seperation between perigee and full moon (for within 24 hours definition)
     perigeedelta = abs((DATEp - DATEfm).total_seconds())
 
-    results = {'definitions': {'EarthSky': Dfm <= 361885,
+    results = {'definitions': {
                                'Sky & Telescope': Dfm <= 358884,
                                'Time & Date': Dfm <= 360000,
                                'Espenak': RelativeDistance_thisorbit >= 0.9,
@@ -118,8 +116,6 @@ Supermoon definitions used:
   eclipse predictions)- A full Moon occurring at a distance 90% or greater 
   of perigee during the current lunation.
   http://astropixels.com/ephemeris/moon/fullperigee2001.html
-* EarthSky (astronomy radio series/blog) - A full Moon occurring within 361,885 km
-  http://earthsky.org/astronomy-essentials/why-experts-disagree-on-what-makes-a-supermoon#nolle
 * Sky and Telescope magazine - A full Moon occurring within 223,000 miles (358,884 km)
 * TimeandDate.com (Norwegian company offering website and data services on 
   time and astronomy)- A full Moon within 360,000 kilometres (223,694 mi) 
