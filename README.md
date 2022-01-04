@@ -26,7 +26,7 @@ Definitions used:
 * Sky and Telescope magazine - A full Moon occurring within 223,000 miles (358,884 km)
   [source](https://skyandtelescope.org/observing/what-is-a-supermoon/)
 * TimeandDate.com (Norwegian company offering website and data services on 
-  time and astronomy)- A full Moon within 360,000 kilometres (223,694 mi) 
+  time and astronomy)- A full Moon within 360,000 kilometers (223,694 mi) 
   [source](https://www.timeanddate.com/astronomy/moon/super-full-moon.html)
 * additionally, full moons occurring within 24 hours of perigee have been labeled as supermoons    
 ```
