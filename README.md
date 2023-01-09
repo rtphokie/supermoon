@@ -30,16 +30,7 @@ Definitions used:
   [source](https://www.timeanddate.com/astronomy/moon/super-full-moon.html)
 * additionally, full moons occurring within 24 hours of perigee have been labeled as supermoons    
 ```
-4 supermoons during 2021:
-  Sun 03/28/2021 02:48 PM EDT (18:48 UTC) according to Espenak
-  Mon 04/26/2021 11:31 PM EDT (03:31 UTC) according to all known definitions
-  Wed 05/26/2021 07:13 AM EDT (11:13 UTC) according to all known definitions
-  Thu 06/24/2021 02:39 PM EDT (18:39 UTC) according to EarthSky, Espenak, and, Nolle
-4 supermoons during 2022:
-  Mon 05/16/2022 12:14 AM EDT (04:14 UTC) according to Espenak, and, Nolle
-  Tue 06/14/2022 07:51 AM EDT (11:51 UTC) according to all known definitions
-  Wed 07/13/2022 02:37 PM EDT (18:37 UTC) according to all known definitions
-  Thu 08/11/2022 09:35 PM EDT (01:35 UTC) according to EarthSky, Espenak, and, Nolle
+
 4 supermoons during 2023:
   Mon 07/03/2023 07:38 AM EDT (11:38 UTC) according to Espenak
   Tue 08/01/2023 02:31 PM EDT (18:31 UTC) according to all known definitions
