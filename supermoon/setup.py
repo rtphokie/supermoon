@@ -9,7 +9,7 @@ setuptools.setup(
     author="Tony Rice",
     author_email="tony@rtphokie.org",
     description="calculates when a full moon coincides with lunar perigee",
-    install_requires = ['skyfield'],
+    install_requires=["skyfield"],
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/rtphokie/supermoon",
