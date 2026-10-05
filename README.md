@@ -21,7 +21,7 @@ The first time you run it, supermoon downloads the JPL DE421 ephemeris (about 17
 ## Command line usage
 
 ```
-usage: supermoon [-h] [--cnt CNT] [-B] [-P] [-D] [-A] [year] [endyear]
+usage: supermoon [-h] [--cnt CNT] [-B] [-P] [-D] [-A] [-C] [year] [endyear]
 
 positional arguments:
   year                  find supermoons for this year (optional, defaults to current date forward)
@@ -35,6 +35,7 @@ options:
   -D, --distance        include distances
   -A, --angulardiameter
                         include angular diameter
+  -C, --csv             also write results to supermoons.csv
 ```
 
 Examples:
@@ -44,6 +45,7 @@ $ supermoon                    # the next supermoon
 $ supermoon --cnt 3 -P -D -A   # the next 3, with perigee, distances and angular diameter
 $ supermoon 2029               # every supermoon in 2029
 $ supermoon 2020 2035 -B       # how many supermoons there are each year from 2020 to 2035
+$ supermoon 2020 2035 -C       # also save them to supermoons.csv
 ```
 
 `python -m supermoon` works the same way.
@@ -64,6 +66,7 @@ result['definitions']           # {'Sky & Telescope': False, 'Time & Date': Fals
 supermoon.supermoons(2029)              # list of every supermoon in a year
 supermoon.next_supermoons(count=3)      # the next 3 supermoons
 supermoon.describe(result, perigee=True, distance=True, angulardiameter=True)  # printable lines
+supermoon.write_csv(supermoon.supermoons(2029), "supermoons.csv")
 ```
 
 Each result is a dictionary with these keys:
@@ -75,7 +78,7 @@ Each result is a dictionary with these keys:
 | `perigee` | `date`, `localdate` and `distance` of the closest perigee |
 | `relative distance` | `thisorbit` (Espenak) and `thisyear` (Nolle) ratios |
 | `full perigee delta hours` / `full perigee delta seconds` | time between the full Moon and perigee |
-| `angular diameter` | the Moon's apparent size, as a string |
+| `angular diameter` / `angular diameter raw` | the Moon's apparent size, as a string / in degrees |
 
 ## Definitions used
 

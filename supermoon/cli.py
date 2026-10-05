@@ -1,8 +1,9 @@
 import argparse
 import sys
-from .core import next_supermoons, supermoons, describe, MIN_YEAR, MAX_YEAR
 
-helpmsg = '''
+from .core import MAX_YEAR, MIN_YEAR, describe, next_supermoons, supermoons, write_csv
+
+helpmsg = """
 Supermoon definitions used:
 * Richard Nolle (coined the term in 1979): A full or new Moon occurring at a
   distance 90% or greater than the closest perigee for the calendar year.
@@ -15,22 +16,47 @@ Supermoon definitions used:
 * TimeandDate.com (Norwegian company offering website and data services on
   time and astronomy)- A full Moon within 360,000 kilometres (223,694 mi)
   https://www.timeanddate.com/astronomy/moon/super-full-moon.html
-'''
+"""
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog='supermoon', formatter_class=argparse.RawTextHelpFormatter,
-                                     epilog=helpmsg)
-    parser.add_argument('year', type=int, nargs='?', default=None,
-                        help='find supermoons for this year (optional, defaults to current date forward)')
-    parser.add_argument('endyear', type=int, nargs='?', default=None, help='stop finding supermoons (optional)')
-    parser.add_argument('--cnt', type=int, default=1, help='moons to show')
-    parser.add_argument('-B', '--brief', action='store_true', help='brief output')
-    parser.add_argument('-P', '--perigee', action='store_true', help='include perigee time')
-    parser.add_argument('-D', '--distance', action='store_true', help='include distances')
-    parser.add_argument('-A', '--angulardiameter', action='store_true', help='include angular diameter')
+    parser = argparse.ArgumentParser(
+        prog="supermoon", formatter_class=argparse.RawTextHelpFormatter, epilog=helpmsg
+    )
+    parser.add_argument(
+        "year",
+        type=int,
+        nargs="?",
+        default=None,
+        help="find supermoons for this year (optional, defaults to current date forward)",
+    )
+    parser.add_argument(
+        "endyear",
+        type=int,
+        nargs="?",
+        default=None,
+        help="stop finding supermoons (optional)",
+    )
+    parser.add_argument("--cnt", type=int, default=1, help="moons to show")
+    parser.add_argument("-B", "--brief", action="store_true", help="brief output")
+    parser.add_argument(
+        "-P", "--perigee", action="store_true", help="include perigee time"
+    )
+    parser.add_argument(
+        "-D", "--distance", action="store_true", help="include distances"
+    )
+    parser.add_argument(
+        "-A", "--angulardiameter", action="store_true", help="include angular diameter"
+    )
+    parser.add_argument(
+        "-C", "--csv", action="store_true", help="also write results to supermoons.csv"
+    )
     args = parser.parse_args(argv)
-    options = dict(perigee=args.perigee, distance=args.distance, angulardiameter=args.angulardiameter)
+    options = {
+        "perigee": args.perigee,
+        "distance": args.distance,
+        "angulardiameter": args.angulardiameter,
+    }
 
     if args.year is None:
         if args.cnt < 1:
@@ -39,23 +65,37 @@ def main(argv=None):
             print(f"The next {args.cnt} supermoons will be:")
         else:
             print("The next supermoon will be:")
-        for result in next_supermoons(count=args.cnt):
+        results = next_supermoons(count=args.cnt)
+        for result in results:
             print("\n".join(describe(result, **options)))
+        if args.csv:
+            _write_csv(results)
         return 0
 
     if args.endyear is None:
         args.endyear = args.year
     for year in (args.year, args.endyear):
         if not MIN_YEAR <= year <= MAX_YEAR:
-            parser.error(f"Please provide a year between {MIN_YEAR} and {MAX_YEAR}, got {year} (per JPL DE421)")
+            parser.error(
+                f"Please provide a year between {MIN_YEAR} and {MAX_YEAR}, got {year} (per JPL DE421)"
+            )
+    all_results = []
     for year in range(args.year, args.endyear + 1):
         results = supermoons(year)
+        all_results.extend(results)
         print(f"{len(results)} supermoons during {year}:")
         if not args.brief:
             for result in results:
                 print("\n".join(describe(result, **options)))
+    if args.csv:
+        _write_csv(all_results)
     return 0
 
 
-if __name__ == '__main__':
+def _write_csv(results, filename="supermoons.csv"):
+    write_csv(results, filename)
+    print(f"Wrote {len(results)} rows to {filename}")
+
+
+if __name__ == "__main__":
     sys.exit(main())
