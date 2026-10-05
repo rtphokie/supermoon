@@ -1,13 +1,8 @@
 from skyfield import almanac
 from datetime import timedelta
-from skyfield.api import Loader, Angle
+from skyfield.api import Angle
 import numpy as np
-
-load = Loader('~/Documents/data')
-e = load('de421.bsp')
-ts = load.timescale()
-earth = e['earth']
-moon = e['moon']
+from .ephemeris import planets, timescale
 
 
 def phases(dt, days=30, phases=range(0,5)):
@@ -19,6 +14,9 @@ def phases(dt, days=30, phases=range(0,5)):
     :return: dictionary (key is the datetime of the event), of dictionaries where
              d is distance in km, phase_name is the title of the phase, phase_code is the integer representing the phase
     '''
+    e = planets()
+    earth, moon = e['earth'], e['moon']
+    ts = timescale()
     t0 = ts.utc(dt)
     t1 = ts.utc(t0.utc_datetime() + timedelta(days=days))
     t, y = almanac.find_discrete(t0, t1, almanac.moon_phases(e))
@@ -43,6 +41,7 @@ def next_full_moon(dt):
     r_moon = 1737.1  # in km
 
     result = phases(dt, days=30, phases=[2])[0]
+    earth, moon = planets()['earth'], planets()['moon']
     moon_observation = earth.at(result['dd']).observe(moon)
     ra, dec, distance = moon_observation.apparent().radec()
     result['diameter'] = Angle(radians=np.arcsin(r_moon / distance.km) * 2.0)

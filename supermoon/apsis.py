@@ -1,20 +1,21 @@
-from datetime import datetime, timedelta, date
-from skyfield.api import Loader, Topos
-import numpy as np
-from scipy.signal import argrelextrema
-load = Loader('/var/data')
-planets = load('de421.bsp')
+from datetime import datetime, timezone
+from .ephemeris import planets, timescale
 
-def next_apogee(dt=datetime.now(), days=30):
+
+def next_apogee(dt=None, days=30):
     return next_apsis(dt=dt, days=days, extrema='max')
 
-def next_perigee(dt=datetime.now(), days=30):
+
+def next_perigee(dt=None, days=30):
     return next_apsis(dt=dt, days=days, extrema='min')
 
-def next_apsis(dt=datetime.now(), days=30, extrema='min'):
-    earth = planets['earth']
-    moon = planets['moon']
-    ts = load.timescale()
+
+def next_apsis(dt=None, days=30, extrema='min'):
+    if dt is None:
+        dt = datetime.now(timezone.utc)
+    earth = planets()['earth']
+    moon = planets()['moon']
+    ts = timescale()
 
     #synodic month 29d 12h 44m 03s
     # day granulartiy
@@ -24,7 +25,7 @@ def next_apsis(dt=datetime.now(), days=30, extrema='min'):
     t = ts.utc(dt.year, dt.month, dt.day, range(dt.hour-24, dt.hour+24))
     dt, _ = _find_apsis(earth, moon, t, extrema)
     # minute granulartiy
-    t = ts.utc(dt.year, dt.month, dt.day, dt.hour, range(dt.minute-60, dt.hour+60))
+    t = ts.utc(dt.year, dt.month, dt.day, dt.hour, range(dt.minute-60, dt.minute+60))
     dt, _ = _find_apsis(earth, moon, t, extrema)
     # second granulartiy
     t = ts.utc(dt.year, dt.month, dt.day, dt.hour, dt.minute, range(dt.second-60, dt.second+60))

@@ -1,11 +1,9 @@
-wheel
-skyfield>=1.11
-simple_cache
-pytz
-scipy
+skyfield>=1.31
+numpy
 tzlocal
 # for tests
-bs4
-lxml
+pytest
+pytz
 requests
-requests_cache
+beautifulsoup4
+lxml

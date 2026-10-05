@@ -7,3 +7,6 @@ venv
 *.bsp
 Leap_Second.dat
 **html
+dist/
+*.egg-info
+.venv

@@ -1,34 +1,115 @@
-Finds instances of supermoon.  For more information see the [wikipedia page on the subject](https://en.wikipedia.org/wiki/Supermoon).
+# supermoon
+
+Finds supermoons, and shows which of the popular (and conflicting) definitions each one meets.
+For background, see the [Wikipedia article on supermoons](https://en.wikipedia.org/wiki/Supermoon).
+
+A supermoon, or perigean full moon, is a full Moon that happens near the point in the Moon's orbit
+closest to Earth, so the Moon looks slightly larger. The term has no astronomical meaning. An
+astrologer coined it, not an astronomer. It describes a timing coincidence in the Moon's synodic
+month, and every popular definition of it is essentially arbitrary.
+
+## Installation
+
 ```
-usage: supermoon [-h] [--cnt CNT] [-P] [-B] [year] [endyear]
+pip install supermoon
+```
+
+The first time you run it, supermoon downloads the JPL DE421 ephemeris (about 17 MB) to
+`~/.supermoon`. To keep it somewhere else, or to reuse a copy you already have, set the
+`SUPERMOON_DATA` environment variable to that directory. DE421 covers the years 1900 through 2050.
+
+## Command line usage
+
+```
+usage: supermoon [-h] [--cnt CNT] [-B] [-P] [-D] [-A] [year] [endyear]
 
 positional arguments:
-  year           find supermoons for this year (optional, defaults to current date forward)
-  endyear        stop finding supermoons for this year (optional)
+  year                  find supermoons for this year (optional, defaults to current date forward)
+  endyear               stop finding supermoons (optional)
 
-optional arguments:
-  -h, --help     show this help message and exit
-  --cnt CNT      moons to show
-  -P, --perigee  include perigee time
-  -B, --brief    brief output
+options:
+  -h, --help            show this help message and exit
+  --cnt CNT             moons to show
+  -B, --brief           brief output
+  -P, --perigee         include perigee time
+  -D, --distance        include distances
+  -A, --angulardiameter
+                        include angular diameter
 ```
 
-Definitions used:
-* Richard Nole (coined the term in 1979): A full or new Moon occurring at a 
-  distance 90% or greater than the closest perigee for the calendar year.
-  [source](https://www.astropro.com/features/tables/cen21ce/suprmoon.html)
-* Fred Espenak (retired NASA astrophysicist, best known for lunar and solar 
-  eclipse predictions)- A full Moon occurring at a distance 90% or greater 
-  of perigee during the current lunation.
+Examples:
+
+```
+$ supermoon                    # the next supermoon
+$ supermoon --cnt 3 -P -D -A   # the next 3, with perigee, distances and angular diameter
+$ supermoon 2029               # every supermoon in 2029
+$ supermoon 2020 2035 -B       # how many supermoons there are each year from 2020 to 2035
+```
+
+`python -m supermoon` works the same way.
+
+## Python usage
+
+```python
+from datetime import datetime, timezone
+import supermoon
+
+# the next supermoon after a date (defaults to now; naive datetimes are treated as UTC)
+result = supermoon.next_supermoon(datetime(2025, 1, 1, tzinfo=timezone.utc))
+result['fullmoon']['date']      # datetime.datetime(2025, 10, 7, 3, 47, 36, ..., tzinfo=UTC)
+result['fullmoon']['distance']  # km
+result['definitions']           # {'Sky & Telescope': False, 'Time & Date': False,
+                                #  'Espenak': True, 'Nolle': True, 'within 1 day of perigee': False}
+
+supermoon.supermoons(2029)              # list of every supermoon in a year
+supermoon.next_supermoons(count=3)      # the next 3 supermoons
+supermoon.describe(result, perigee=True, distance=True, angulardiameter=True)  # printable lines
+```
+
+Each result is a dictionary with these keys:
+
+| key | contents |
+|---|---|
+| `definitions` | each definition's name, mapped to whether this full Moon meets it |
+| `fullmoon` | `date` (UTC), `localdate` (local time zone), `distance` (km) |
+| `perigee` | `date`, `localdate` and `distance` of the closest perigee |
+| `relative distance` | `thisorbit` (Espenak) and `thisyear` (Nolle) ratios |
+| `full perigee delta hours` / `full perigee delta seconds` | time between the full Moon and perigee |
+| `angular diameter` | the Moon's apparent size, as a string |
+
+## Definitions used
+
+* Richard Nolle, an astrologer, coined the term in 1979 in an article in _Dell Horoscope_ magazine.
+  He has refined his definition twice:
+    - rule 1 (1979): a full or new Moon at a distance 90% or greater than the perigee in a given orbit
+    - rule 2 (2000): a full or new Moon at a distance 90% or greater than mean perigee
+      [source](https://www.astropro.com/features/articles/supermoon/)
+    - rule 3 (2011): a full or new Moon at a distance 90% or greater than the closest perigee for
+      the calendar year. This package calculates this rule.
+      [source](https://www.astropro.com/features/tables/cen21ce/suprmoon.html)
+* Fred Espenak (retired NASA astrophysicist, best known for lunar and solar eclipse predictions):
+  a full Moon at a distance 90% or greater of perigee during the current lunation. EarthSky also
+  [uses this definition](https://earthsky.org/astronomy-essentials/why-experts-disagree-on-what-makes-a-supermoon#nolle).
   [source](http://astropixels.com/ephemeris/moon/fullperigee2001.html)
-* EarthSky (astronomy radio series/blog) - A full Moon occurring within 361,885 km
-  [source](http://earthsky.org/astronomy-essentials/why-experts-disagree-on-what-makes-a-supermoon#nolle)
-* Sky and Telescope magazine - A full Moon occurring within 223,000 miles (358,884 km)
+* Sky and Telescope magazine: a full Moon within 223,000 miles (358,884 km)
   [source](https://skyandtelescope.org/observing/what-is-a-supermoon/)
-* TimeandDate.com (Norwegian company offering website and data services on 
-  time and astronomy)- A full Moon within 360,000 kilometers (223,694 mi) 
+* TimeandDate.com (a Norwegian company offering website and data services on time and astronomy):
+  a full Moon within 360,000 kilometers (223,694 mi)
   [source](https://www.timeanddate.com/astronomy/moon/super-full-moon.html)
-* additionally, full moons occurring within 24 hours of perigee have been labeled as supermoons    
+* Additionally, some sources have labeled full Moons within 24 hours of perigee as supermoons.
+
+Nolle was presumably inspired by the real increase in tidal effects at a perigee
+[syzygy](https://en.wikipedia.org/wiki/Syzygy_%28astronomy%29), so his tables include both new and
+full Moons. Most mentions of supermoons in the popular media focus on full Moons near perigee,
+because a new Moon is hard to see. This package only considers full Moons.
+
+This collection of conflicting definitions is further described in
+[this article I wrote on the subject](https://www.wral.com/weather/blogpost/11487264/).
+
+## Supermoons, 2020 through 2035
+
+Times are US Eastern.
+
 ```
 4 supermoons during 2020:
   Sun 02/09/2020 02:33 AM EST (07:33 UTC) according to Espenak
@@ -111,8 +192,26 @@ Definitions used:
   Tue 01/23/2035 03:16 PM EST (20:16 UTC) according to Espenak
   Thu 11/15/2035 08:48 AM EST (13:48 UTC) according to Espenak
   Fri 12/14/2035 07:33 PM EST (00:33 UTC) according to all known definitions
-(.venv) trice@Tonys-MacBook-Pro supermoon % 
+```
 
+## Development
 
+The project uses [uv](https://docs.astral.sh/uv/):
 
 ```
+uv sync --extra test
+uv run pytest tests/supermoon_tests.py
+uv run supermoon 2025
+```
+
+`tests/basic.py` checks the perigee and apogee calculations against Fred Espenak's published
+tables. It downloads those tables from astropixels.com, so it needs network access.
+
+## Releasing to PyPI
+
+```
+uv build
+uv publish
+```
+
+Before each release, bump `__version__` in `supermoon/__init__.py`.
