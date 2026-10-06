@@ -1,4 +1,6 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
+
+from skyfield.searchlib import find_maxima, find_minima
 
 from .ephemeris import planets, timescale
 
@@ -12,50 +14,42 @@ def next_perigee(dt=None, days=30):
 
 
 def next_apsis(dt=None, days=30, extrema="min"):
+    """
+    the first perigee (extrema="min") or apogee (extrema="max") on or after dt
+    :param dt: timezone aware datetime, defaults to current time (UTC)
+    :param days: days to search; perigees and apogees are 24.6 to 28.6 days apart
+    :return: datetime (UTC) and distance in km
+    """
     if dt is None:
         dt = datetime.now(UTC)
-    earth = planets()["earth"]
-    moon = planets()["moon"]
-    ts = timescale()
-
-    # synodic month 29d 12h 44m 03s
-    # day granulartiy
-    t = ts.utc(dt.year, dt.month, range(dt.day, dt.day + days))
-    dt, _ = _find_apsis(earth, moon, t, extrema)
-    # hour granulartiy
-    t = ts.utc(dt.year, dt.month, dt.day, range(dt.hour - 24, dt.hour + 24))
-    dt, _ = _find_apsis(earth, moon, t, extrema)
-    # minute granulartiy
-    t = ts.utc(
-        dt.year, dt.month, dt.day, dt.hour, range(dt.minute - 60, dt.minute + 60)
-    )
-    dt, _ = _find_apsis(earth, moon, t, extrema)
-    # second granulartiy
-    t = ts.utc(
-        dt.year,
-        dt.month,
-        dt.day,
-        dt.hour,
-        dt.minute,
-        range(dt.second - 60, dt.second + 60),
-    )
-    dt, d = _find_apsis(earth, moon, t, extrema)
-
+    elif dt.tzinfo is None:
+        dt = dt.replace(tzinfo=UTC)
+    found = apsides(dt, dt + timedelta(days=days), extrema)
+    if not found:
+        raise ValueError(f"no {extrema} distance found within {days} days of {dt}")
+    dt, d = found[0]
     return dt, round(d, 0)
 
 
-def _find_apsis(earth, moon, t, extrema):
-    dt = None
-    value = None
-    position = (moon - earth).at(t)
-    d = position.distance().km
+def apsides(start, end, extrema="min"):
+    """
+    every perigee (extrema="min") or apogee (extrema="max") between start and end
+    :return: list of (datetime (UTC), distance in km), in date order
+    """
     if extrema == "min":
-        dt = t[d.argmin()].utc_datetime()
-        value = d.min()
+        find = find_minima
     elif extrema == "max":
-        dt = t[d.argmax()].utc_datetime()
-        value = d.max()
+        find = find_maxima
     else:
         raise ValueError("please use extremas of min or max")
+    ts = timescale()
+    t, d = find(ts.from_datetime(start), ts.from_datetime(end), _distance_km)
+    return [(tt.utc_datetime(), float(dd)) for tt, dd in zip(t, d)]
 
-    return dt, value
+
+def _distance_km(t):
+    e = planets()
+    return (e["moon"] - e["earth"]).at(t).distance().km
+
+
+_distance_km.step_days = 1.0

@@ -20,11 +20,11 @@ Known definitions are calculated here
 
 import csv
 from datetime import UTC, datetime, timedelta
-from functools import lru_cache
+from functools import cache, lru_cache
 
 from tzlocal import get_localzone
 
-from .apsis import next_apogee, next_perigee
+from .apsis import apsides, next_apogee
 from .lunarphases import next_full_moon
 
 # range covered by the JPL DE421 ephemeris
@@ -62,17 +62,17 @@ def _full_moon(dt):
     """
     # find datetime and distance of next full moon from the date given
     DATEfm, Dfm, diameter = next_full_moon(dt)
-    jan1 = datetime(year=DATEfm.year, month=1, day=1, tzinfo=UTC)
 
-    # find distance of next perigee and apogee (for Espenak definition)
-    DATEp, Dp = next_perigee(DATEfm - timedelta(days=14))
+    # find the perigee nearest the full moon and the apogee after it (for Espenak definition)
+    perigees = apsides(DATEfm - timedelta(days=16), DATEfm + timedelta(days=16), "min")
+    DATEp, Dp = min(perigees, key=lambda p: abs(p[0] - DATEfm))
+    Dp = round(Dp, 0)
     _, Da = next_apogee(DATEp)
 
     RelativeDistance_thisorbit = (Da - Dfm) / (Da - Dp)
 
     # find closest perigee and furthest apogee of the year for (Nolle definition)
-    _, MinDp = next_perigee(jan1, days=366)
-    _, MaxDa = next_apogee(jan1, days=366)
+    MinDp, MaxDa = _year_extremes(DATEfm.year)
     RelativeDistance_thisyear = (MaxDa - Dfm) / (MaxDa - MinDp)
 
     # time seperation between perigee and full moon (for within 24 hours definition)
@@ -105,6 +105,18 @@ def _full_moon(dt):
         "angular diameter": str(diameter),
         "angular diameter raw": diameter.degrees,
     }
+
+
+@cache
+def _year_extremes(year):
+    """
+    distance of the closest perigee and furthest apogee during a calendar year (UTC)
+    """
+    start = datetime(year=year, month=1, day=1, tzinfo=UTC)
+    end = datetime(year=year + 1, month=1, day=1, tzinfo=UTC)
+    min_perigee = min(d for _, d in apsides(start, end, "min"))
+    max_apogee = max(d for _, d in apsides(start, end, "max"))
+    return round(min_perigee, 0), round(max_apogee, 0)
 
 
 def next_supermoons(count=1, dt=None):
@@ -158,10 +170,14 @@ def describe(result, perigee=False, distance=False, angulardiameter=False):
         if meets:
             thelist.append(definition)
     if len(thelist) == len(result["definitions"].values()):
-        thelist = ["all known definitions"]
-    elif len(thelist) > 1:
-        thelist.insert(-1, "and")
-    lines.append(f"  {msgstr} according to {', '.join(thelist)}")
+        definitions = "all known definitions"
+    elif len(thelist) == 2:
+        definitions = " and ".join(thelist)
+    elif len(thelist) > 2:
+        definitions = f"{', '.join(thelist[:-1])}, and {thelist[-1]}"
+    else:
+        definitions = thelist[0]
+    lines.append(f"  {msgstr} according to {definitions}")
     if angulardiameter:
         lines.append(f"   angular diameter: {result['angular diameter']}")
     if perigee:
