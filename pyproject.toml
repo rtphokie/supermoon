@@ -40,3 +40,6 @@ packages = ["supermoon"]
 
 [tool.setuptools.dynamic]
 version = {attr = "supermoon.__version__"}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
