@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from .ephemeris import planets, timescale
 
@@ -13,7 +13,7 @@ def next_perigee(dt=None, days=30):
 
 def next_apsis(dt=None, days=30, extrema="min"):
     if dt is None:
-        dt = datetime.now(timezone.utc)
+        dt = datetime.now(UTC)
     earth = planets()["earth"]
     moon = planets()["moon"]
     ts = timescale()

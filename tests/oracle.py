@@ -6,7 +6,7 @@ uses Skyfield's root-finding search (find_minima / find_maxima / find_discrete) 
 on the Earth-Moon distance, sharing only the JPL DE421 ephemeris with the code under test.
 """
 
-from functools import lru_cache
+from functools import cache
 
 from skyfield import almanac
 from skyfield.searchlib import find_maxima, find_minima
@@ -22,7 +22,7 @@ def _distance_km(t):
 _distance_km.step_days = 1.0
 
 
-@lru_cache(maxsize=None)
+@cache
 def apsides(year):
     """perigees and apogees from Nov 1 of the prior year through Mar 1 of the next"""
     ts = timescale()
@@ -34,7 +34,7 @@ def apsides(year):
     return perigees, apogees
 
 
-@lru_cache(maxsize=None)
+@cache
 def full_moons(year):
     """(datetime, distance km) of every full moon in the calendar year (UTC)"""
     ts = timescale()

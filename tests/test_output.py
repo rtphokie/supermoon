@@ -5,7 +5,7 @@ describe(), CSV output and the command line interface
 import csv
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -15,7 +15,7 @@ from supermoon.core import CSV_FIELDS
 
 
 def utc(*args):
-    return datetime(*args, tzinfo=timezone.utc)
+    return datetime(*args, tzinfo=UTC)
 
 
 @pytest.fixture

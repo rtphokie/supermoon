@@ -2,7 +2,7 @@
 supermoons() and friends checked against the independent reference in oracle.py
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from oracle import evaluate, expected_supermoons
@@ -14,7 +14,7 @@ YEARS = list(range(2010, 2036))
 
 
 def utc(*args):
-    return datetime(*args, tzinfo=timezone.utc)
+    return datetime(*args, tzinfo=UTC)
 
 
 def same_instant(a, b):
@@ -102,7 +102,7 @@ def test_next_supermoon_naive_datetime_is_utc():
 
 def test_next_supermoon_defaults_to_now():
     result = next_supermoon()
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     assert (
         now - timedelta(days=1) < result["fullmoon"]["date"] < now + timedelta(days=800)
     )

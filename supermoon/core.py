@@ -19,7 +19,7 @@ Known definitions are calculated here
 """
 
 import csv
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from functools import lru_cache
 
 from tzlocal import get_localzone
@@ -46,9 +46,9 @@ def next_supermoon(dt=None):
     :return: dictionary
     """
     if dt is None:
-        dt = datetime.now(timezone.utc)
+        dt = datetime.now(UTC)
     elif dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
+        dt = dt.replace(tzinfo=UTC)
     result = _full_moon(dt)
     while not any(result["definitions"].values()):
         result = _full_moon(result["fullmoon"]["date"] + timedelta(days=1))
@@ -62,7 +62,7 @@ def _full_moon(dt):
     """
     # find datetime and distance of next full moon from the date given
     DATEfm, Dfm, diameter = next_full_moon(dt)
-    jan1 = datetime(year=DATEfm.year, month=1, day=1, tzinfo=timezone.utc)
+    jan1 = datetime(year=DATEfm.year, month=1, day=1, tzinfo=UTC)
 
     # find distance of next perigee and apogee (for Espenak definition)
     DATEp, Dp = next_perigee(DATEfm - timedelta(days=14))
@@ -133,7 +133,7 @@ def supermoons(year):
             f"year must be between {MIN_YEAR} and {MAX_YEAR} (per JPL DE421), got {year}"
         )
     results = []
-    dt = datetime(year=year, month=1, day=1, tzinfo=timezone.utc)
+    dt = datetime(year=year, month=1, day=1, tzinfo=UTC)
     while True:
         result = next_supermoon(dt=dt)
         if result["fullmoon"]["date"].year != year:

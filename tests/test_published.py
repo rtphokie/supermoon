@@ -5,7 +5,7 @@ Full moon times: US Naval Observatory phases of the Moon.
 Perigees: Fred Espenak, astropixels.com "Moon at Perigee and Apogee" tables (1 minute / 1 km precision).
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -14,7 +14,7 @@ from supermoon.lunarphases import next_full_moon
 
 
 def utc(*args):
-    return datetime(*args, tzinfo=timezone.utc)
+    return datetime(*args, tzinfo=UTC)
 
 
 FULL_MOONS = [

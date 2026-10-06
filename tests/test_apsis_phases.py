@@ -2,7 +2,7 @@
 apsis and lunarphases checked against the independent reference in oracle.py
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from oracle import apsides, full_moons
@@ -11,7 +11,7 @@ from supermoon import apsis, lunarphases
 
 
 def utc(*args):
-    return datetime(*args, tzinfo=timezone.utc)
+    return datetime(*args, tzinfo=UTC)
 
 
 def _sweep(year, step_days=3):

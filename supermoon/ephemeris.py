@@ -6,7 +6,7 @@ or to the directory named by the SUPERMOON_DATA environment variable.
 """
 
 import os
-from functools import lru_cache
+from functools import cache
 
 from skyfield.api import Loader
 
@@ -16,16 +16,16 @@ DATA_DIR = os.environ.get(
 EPHEMERIS = "de421.bsp"  # covers 1900-2050
 
 
-@lru_cache(maxsize=None)
+@cache
 def loader():
     return Loader(DATA_DIR, verbose=False)
 
 
-@lru_cache(maxsize=None)
+@cache
 def planets():
     return loader()(EPHEMERIS)
 
 
-@lru_cache(maxsize=None)
+@cache
 def timescale():
     return loader().timescale()
