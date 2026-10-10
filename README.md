@@ -256,29 +256,3 @@ uv run supermoon 2025
 The tests check results against an independent reference calculation (`tests/oracle.py`) and
 against published values from the US Naval Observatory and Fred Espenak's perigee tables. They
 need the DE421 ephemeris, which is downloaded on the first run.
-
-## Releasing to PyPI
-
-1. Bump `__version__` in `supermoon/__init__.py`.
-2. Run the tests and ruff checks above.
-3. Build and check the distributions:
-
-   ```
-   rm -rf dist
-   uv build
-   uvx twine check dist/*
-   ```
-
-4. Optionally, try the release on [TestPyPI](https://test.pypi.org/) first:
-
-   ```
-   uv publish --publish-url https://test.pypi.org/legacy/
-   ```
-
-5. Publish, then tag the release:
-
-   ```
-   uv publish
-   git tag v$(uv run python -c "import supermoon; print(supermoon.__version__)")
-   git push --tags
-   ```
