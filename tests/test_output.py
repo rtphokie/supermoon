@@ -11,7 +11,7 @@ import pytest
 
 from supermoon import describe, next_supermoon, supermoons, write_csv
 from supermoon.cli import main
-from supermoon.core import CSV_FIELDS
+from supermoon.core import CSV_FIELDS, KM_TO_MI
 
 
 def utc(*args):
@@ -37,7 +37,7 @@ def test_describe_all_definitions(nov2016):
 
 
 @pytest.mark.parametrize(
-    "names, expected",
+    ("names", "expected"),
     [
         (["Nolle"], "according to Nolle"),
         (["Espenak", "Nolle"], "according to Espenak and Nolle"),
@@ -66,14 +66,14 @@ def test_write_csv(tmp_path):
     results = supermoons(2025)
     path = tmp_path / "out.csv"
     write_csv(results, str(path))
-    with open(path, newline="", encoding="utf-8") as f:
+    with path.open(newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
     assert len(rows) == len(results)
     assert tuple(rows[0].keys()) == CSV_FIELDS
-    for row, r in zip(rows, results):
+    for row, r in zip(rows, results, strict=True):
         assert int(row["perigee_distance_km"]) == int(r["perigee"]["distance"])
         assert int(row["perigee_distance_mi"]) == round(
-            r["perigee"]["distance"] * 0.621371
+            r["perigee"]["distance"] * KM_TO_MI
         )
         assert row["fullmoon_local_date"].startswith(
             r["fullmoon"]["localdate"].strftime("%Y-%m-%d %H:%M")

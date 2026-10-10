@@ -18,7 +18,13 @@ dependencies = [
 ]
 keywords = ["supermoon", "moon", "perigee", "full moon", "astronomy"]
 classifiers = [
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     "Environment :: Console",
     "Intended Audience :: Science/Research",
@@ -26,10 +32,12 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "pytz", "requests", "beautifulsoup4", "lxml"]
+test = ["pytest"]
+dev = ["pytest", "ruff"]
 
 [project.urls]
 Homepage = "https://github.com/rtphokie/supermoon"
+Source = "https://github.com/rtphokie/supermoon"
 Issues = "https://github.com/rtphokie/supermoon/issues"
 
 [project.scripts]
@@ -46,3 +54,20 @@ testpaths = ["tests"]
 
 [tool.ruff.format]
 exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle
+    "F",       # pyflakes
+    "I",       # isort
+    "B",       # flake8-bugbear
+    "UP",      # pyupgrade
+    "SIM",     # flake8-simplify
+    "C4",      # flake8-comprehensions
+    "PIE",     # flake8-pie
+    "RET",     # flake8-return
+    "PTH",     # flake8-use-pathlib
+    "PT",      # flake8-pytest-style
+    "N",       # pep8-naming
+    "RUF",     # ruff-specific
+]

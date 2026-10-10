@@ -1,9 +1,9 @@
 """
 Independent reference ("oracle") calculations used to check the supermoon package.
 
-The package finds apsides with its own coarse-to-fine grid search. The oracle instead
-uses Skyfield's root-finding search (find_minima / find_maxima / find_discrete) directly
-on the Earth-Moon distance, sharing only the JPL DE421 ephemeris with the code under test.
+The oracle uses Skyfield's root-finding search (find_minima / find_maxima /
+find_discrete) directly on the Earth-Moon distance over whole years, and evaluates
+each supermoon definition from scratch rather than through the package's code.
 """
 
 from functools import cache
@@ -29,8 +29,8 @@ def apsides(year):
     t0, t1 = ts.utc(year - 1, 11, 1), ts.utc(year + 1, 3, 1)
     tp, dp = find_minima(t0, t1, _distance_km)
     ta, da = find_maxima(t0, t1, _distance_km)
-    perigees = [(t.utc_datetime(), float(d)) for t, d in zip(tp, dp)]
-    apogees = [(t.utc_datetime(), float(d)) for t, d in zip(ta, da)]
+    perigees = [(t.utc_datetime(), float(d)) for t, d in zip(tp, dp, strict=True)]
+    apogees = [(t.utc_datetime(), float(d)) for t, d in zip(ta, da, strict=True)]
     return perigees, apogees
 
 
@@ -43,18 +43,21 @@ def full_moons(year):
     )
     return [
         (tt.utc_datetime(), float(_distance_km(tt)))
-        for tt, p in zip(t, phase)
+        for tt, p in zip(t, phase, strict=True)
         if p == 2
     ]
 
 
 def evaluate(year):
     """
-    every full moon of the year, with its perigee and each supermoon definition evaluated
+    every full moon of the year, with its perigee and each definition evaluated
     :return: list of dictionaries, in date order
     """
     perigees, apogees = apsides(year)
-    in_year = lambda events: [d for dt, d in events if dt.year == year]
+
+    def in_year(events):
+        return [d for dt, d in events if dt.year == year]
+
     min_perigee, max_apogee = min(in_year(perigees)), max(in_year(apogees))
 
     results = []

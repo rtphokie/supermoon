@@ -7,12 +7,11 @@ or to the directory named by the SUPERMOON_DATA environment variable.
 
 import os
 from functools import cache
+from pathlib import Path
 
 from skyfield.api import Loader
 
-DATA_DIR = os.environ.get(
-    "SUPERMOON_DATA", os.path.join(os.path.expanduser("~"), ".supermoon")
-)
+DATA_DIR = os.environ.get("SUPERMOON_DATA", str(Path.home() / ".supermoon"))
 EPHEMERIS = "de421.bsp"  # covers 1900-2050
 
 

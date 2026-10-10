@@ -22,7 +22,7 @@ def _sweep(year, step_days=3):
 
 
 @pytest.mark.parametrize(
-    "func, which",
+    ("func", "which"),
     [(apsis.next_perigee, 0), (apsis.next_apogee, 1)],
     ids=["perigee", "apogee"],
 )
@@ -38,7 +38,8 @@ def test_next_apsis_is_the_next_one(func, which, year):
             or abs(actual_d - expected_d) > 1
         ):
             wrong.append(
-                f"from {start:%Y-%m-%d}: got {actual:%Y-%m-%d %H:%M}, expected {expected:%Y-%m-%d %H:%M}"
+                f"from {start:%Y-%m-%d}: got {actual:%Y-%m-%d %H:%M}, "
+                f"expected {expected:%Y-%m-%d %H:%M}"
             )
     assert not wrong, "\n".join(wrong)
 
@@ -52,7 +53,7 @@ def test_perigee_closer_than_apogee():
 
 
 def test_invalid_extrema():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="min or max"):
         apsis.next_apsis(dt=utc(2025, 1, 1), extrema="mid")
 
 
@@ -61,7 +62,7 @@ def test_full_moons_match_reference(year):
     expected = full_moons(year)
     actual = lunarphases.phases(utc(year, 1, 1), days=365 + (year % 4 == 0), phases=[2])
     assert len(actual) == len(expected)
-    for (exp_dt, exp_d), act in zip(expected, actual):
+    for (exp_dt, exp_d), act in zip(expected, actual, strict=True):
         assert abs((act["dt"] - exp_dt).total_seconds()) <= 1
         assert act["d"] == pytest.approx(exp_d, abs=0.1)
         assert act["phase_name"] == "Full Moon"
@@ -69,8 +70,8 @@ def test_full_moons_match_reference(year):
 
 def test_phases_in_order():
     data = lunarphases.phases(utc(2019, 1, 1), days=30)
-    # Jan 2019: last quarter (Dec 29) was before the start; new Jan 6, first quarter Jan 14,
-    # full Jan 21, last quarter Jan 27
+    # Jan 2019: last quarter (Dec 29) was before the start; new Jan 6,
+    # first quarter Jan 14, full Jan 21, last quarter Jan 27
     assert [p["phase_code"] for p in data] == [0, 1, 2, 3]
     assert [p["dt"].day for p in data] == [6, 14, 21, 27]
 
@@ -85,4 +86,5 @@ def test_angular_diameter():
     _, d, diameter = lunarphases.next_full_moon(utc(2025, 11, 1))
     # the Moon's apparent diameter ranges from about 29.4' at apogee to 34.1' at perigee
     assert 29.3 < diameter.arcminutes() < 34.2
-    assert d < 360000 and diameter.arcminutes() > 33
+    assert d < 360000
+    assert diameter.arcminutes() > 33

@@ -12,7 +12,8 @@ Supermoon definitions used:
   eclipse predictions)- A full Moon occurring at a distance 90% or greater
   of perigee during the current lunation.
   http://astropixels.com/ephemeris/moon/fullperigee2001.html
-* Sky and Telescope magazine - A full Moon occurring within 223,000 miles (358,884 km)
+* Sky and Telescope magazine - A full Moon occurring within 223,000 miles
+  (358,884 km)
 * TimeandDate.com (Norwegian company offering website and data services on
   time and astronomy)- A full Moon within 360,000 kilometres (223,694 mi)
   https://www.timeanddate.com/astronomy/moon/super-full-moon.html
@@ -28,7 +29,7 @@ def main(argv=None):
         type=int,
         nargs="?",
         default=None,
-        help="find supermoons for this year (optional, defaults to current date forward)",
+        help="find supermoons for this year (optional, defaults to now onward)",
     )
     parser.add_argument(
         "endyear",
@@ -77,7 +78,8 @@ def main(argv=None):
     for year in (args.year, args.endyear):
         if not MIN_YEAR <= year <= MAX_YEAR:
             parser.error(
-                f"Please provide a year between {MIN_YEAR} and {MAX_YEAR}, got {year} (per JPL DE421)"
+                f"Please provide a year between {MIN_YEAR} and {MAX_YEAR}, "
+                f"got {year} (per JPL DE421)"
             )
     all_results = []
     for year in range(args.year, args.endyear + 1):

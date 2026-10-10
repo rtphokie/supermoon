@@ -44,7 +44,7 @@ def apsides(start, end, extrema="min"):
         raise ValueError("please use extremas of min or max")
     ts = timescale()
     t, d = find(ts.from_datetime(start), ts.from_datetime(end), _distance_km)
-    return [(tt.utc_datetime(), float(dd)) for tt, dd in zip(t, d)]
+    return [(tt.utc_datetime(), float(dd)) for tt, dd in zip(t, d, strict=True)]
 
 
 def _distance_km(t):

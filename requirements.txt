@@ -3,7 +3,3 @@ numpy
 tzlocal
 # for tests
 pytest
-pytz
-requests
-beautifulsoup4
-lxml

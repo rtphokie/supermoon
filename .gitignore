@@ -10,3 +10,8 @@ Leap_Second.dat
 dist/
 *.egg-info
 .venv
+.DS_Store
+.pytest_cache/
+.ruff_cache/
+.supermoon.cache
+supermoons.csv

@@ -7,14 +7,15 @@ from skyfield.api import Angle
 from .ephemeris import planets, timescale
 
 
-def phases(dt, days=30, phases=range(5)):
+def phases(dt, days=30, phases=range(4)):
     """
 
     :param dt: datetime to begin search
     :param days: days to search, defaults to 30 to encompass a full lunation
     :param phases: 0=new, 1=first quarter, 2=full, 3=last quarter
-    :return: dictionary (key is the datetime of the event), of dictionaries where
-             d is distance in km, phase_name is the title of the phase, phase_code is the integer representing the phase
+    :return: list of dictionaries in date order, where dt is the datetime (UTC),
+             d is distance in km, phase_name is the title of the phase and
+             phase_code is the integer representing the phase
     """
     e = planets()
     earth, moon = e["earth"], e["moon"]
@@ -25,7 +26,7 @@ def phases(dt, days=30, phases=range(5)):
     positions = (moon - earth).at(t)
 
     results = []
-    for dd, phase_code, pos in zip(t, y, positions):
+    for dd, phase_code, pos in zip(t, y, positions, strict=True):
         if phase_code in phases:
             results.append(
                 {

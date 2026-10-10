@@ -30,7 +30,7 @@ def test_matches_reference(year):
     assert [r["fullmoon"][0].date() for r in expected] == [
         r["fullmoon"]["date"].date() for r in actual
     ]
-    for exp, act in zip(expected, actual):
+    for exp, act in zip(expected, actual, strict=True):
         fm_date, fm_dist = exp["fullmoon"]
         p_date, p_dist = exp["perigee"]
         label = fm_date.date().isoformat()
@@ -77,7 +77,7 @@ def test_ephemeris_limits(year):
 
 @pytest.mark.parametrize("year", [MIN_YEAR - 1, MAX_YEAR + 1])
 def test_out_of_range(year):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="year must be between"):
         supermoons(year)
 
 
@@ -95,7 +95,7 @@ def test_next_supermoon_is_first_on_or_after_date():
 
 
 def test_next_supermoon_naive_datetime_is_utc():
-    naive = next_supermoon(dt=datetime(2025, 1, 1))  # noqa: DTZ001
+    naive = next_supermoon(dt=datetime(2025, 1, 1))
     aware = next_supermoon(dt=utc(2025, 1, 1))
     assert same_instant(naive["fullmoon"]["date"], aware["fullmoon"]["date"])
 
@@ -112,7 +112,7 @@ def test_next_supermoons_spans_years():
     expected = supermoons(2024) + supermoons(2025)
     results = next_supermoons(count=len(expected), dt=utc(2024, 1, 1))
     assert len(results) == len(expected)
-    for r, e in zip(results, expected):
+    for r, e in zip(results, expected, strict=True):
         assert same_instant(r["fullmoon"]["date"], e["fullmoon"]["date"])
 
 

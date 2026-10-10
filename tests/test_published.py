@@ -2,7 +2,8 @@
 Checks against published values, independent of Skyfield.
 
 Full moon times: US Naval Observatory phases of the Moon.
-Perigees: Fred Espenak, astropixels.com "Moon at Perigee and Apogee" tables (1 minute / 1 km precision).
+Perigees: Fred Espenak, astropixels.com "Moon at Perigee and Apogee" tables
+(1 minute / 1 km precision).
 """
 
 from datetime import UTC, datetime, timedelta
@@ -41,7 +42,7 @@ def test_full_moon_time(expected):
 
 
 @pytest.mark.parametrize(
-    "fullmoon, perigee, distance",
+    ("fullmoon", "perigee", "distance"),
     PERIGEES,
     ids=[p[0].date().isoformat() for p in PERIGEES],
 )
