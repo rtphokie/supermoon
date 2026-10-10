@@ -33,10 +33,17 @@ from pathlib import Path
 
 from tzlocal import get_localzone
 
+from ._util import as_utc
 from .apsis import apsides, next_apogee
 from .lunarphases import next_full_moon
 
 KM_TO_MI = 0.621371
+
+# supermoon definition thresholds
+SKY_AND_TELESCOPE_KM = 358884  # 223,000 miles
+TIME_AND_DATE_KM = 360000
+RELATIVE_DISTANCE = 0.9  # Espenak and Nolle: 90% of the way from apogee to perigee
+PERIGEE_SECONDS = 86400  # within 1 day of perigee
 
 # range covered by the JPL DE421 ephemeris
 MIN_YEAR = 1900
@@ -56,11 +63,7 @@ def next_supermoon(dt=None):
     :param dt: timezone aware datetime, defaults to current time (UTC)
     :return: dictionary
     """
-    if dt is None:
-        dt = datetime.now(UTC)
-    elif dt.tzinfo is None:
-        dt = dt.replace(tzinfo=UTC)
-    result = _full_moon(dt)
+    result = _full_moon(as_utc(dt))
     while not any(result["definitions"].values()):
         result = _full_moon(result["fullmoon"]["date"] + timedelta(days=1))
     return result
@@ -92,11 +95,11 @@ def _full_moon(dt):
 
     return {
         "definitions": {
-            "Sky & Telescope": bool(fm_dist <= 358884),
-            "Time & Date": bool(fm_dist <= 360000),
-            "Espenak": bool(rel_dist_orbit >= 0.9),
-            "Nolle": bool(rel_dist_year >= 0.9),
-            "within 1 day of perigee": perigeedelta <= 86400.0,
+            "Sky & Telescope": bool(fm_dist <= SKY_AND_TELESCOPE_KM),
+            "Time & Date": bool(fm_dist <= TIME_AND_DATE_KM),
+            "Espenak": bool(rel_dist_orbit >= RELATIVE_DISTANCE),
+            "Nolle": bool(rel_dist_year >= RELATIVE_DISTANCE),
+            "within 1 day of perigee": perigeedelta <= PERIGEE_SECONDS,
         },
         "relative distance": {
             "thisorbit": float(rel_dist_orbit),
@@ -181,19 +184,17 @@ def describe(result, perigee=False, distance=False, angulardiameter=False):
     )
     if distance:
         msgstr += f" {_km_mi(fullmoon['distance'])}"
-    thelist = []
-    for definition, meets in result["definitions"].items():
-        if meets:
-            thelist.append(definition)
-    if len(thelist) == len(result["definitions"].values()):
-        definitions = "all known definitions"
-    elif len(thelist) == 2:
-        definitions = " and ".join(thelist)
-    elif len(thelist) > 2:
-        definitions = f"{', '.join(thelist[:-1])}, and {thelist[-1]}"
+    met = [name for name, meets in result["definitions"].items() if meets]
+    if not met:
+        lines.append(f"  {msgstr}, not a supermoon by any known definition")
     else:
-        definitions = thelist[0]
-    lines.append(f"  {msgstr} according to {definitions}")
+        if len(met) == len(result["definitions"]):
+            definitions = "all known definitions"
+        elif len(met) <= 2:
+            definitions = " and ".join(met)
+        else:
+            definitions = f"{', '.join(met[:-1])}, and {met[-1]}"
+        lines.append(f"  {msgstr} according to {definitions}")
     if angulardiameter:
         lines.append(f"   angular diameter: {result['angular diameter']}")
     if perigee:

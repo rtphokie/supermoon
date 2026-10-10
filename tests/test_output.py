@@ -52,6 +52,11 @@ def test_describe_lists_definitions(nov2016, names, expected):
     assert line.endswith(expected)
 
 
+def test_describe_no_definitions(nov2016):
+    line = describe(with_definitions(nov2016))[0]
+    assert line.endswith(", not a supermoon by any known definition")
+
+
 def test_describe_options(nov2016):
     lines = describe(nov2016, perigee=True, distance=True, angulardiameter=True)
     assert len(lines) == 3
@@ -117,7 +122,15 @@ def test_cli_next(capsys):
 
 
 @pytest.mark.parametrize(
-    "argv", [["1899"], ["2025", "2051"], ["--cnt", "0"], ["notayear"]]
+    "argv",
+    [
+        ["1899"],
+        ["2025", "2051"],
+        ["2025", "2024"],
+        ["2025", "--cnt", "3"],
+        ["--cnt", "0"],
+        ["notayear"],
+    ],
 )
 def test_cli_rejects_bad_input(argv):
     with pytest.raises(SystemExit) as exc:

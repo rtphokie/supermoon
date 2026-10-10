@@ -1,15 +1,17 @@
 """
 Independent reference ("oracle") calculations used to check the supermoon package.
 
-The oracle uses Skyfield's root-finding search (find_minima / find_maxima /
-find_discrete) directly on the Earth-Moon distance over whole years, and evaluates
-each supermoon definition from scratch rather than through the package's code.
+The package finds apsides and full moons with Skyfield's search functions
+(find_minima / find_maxima / find_discrete). The oracle shares only the JPL DE421
+ephemeris with it: it samples the Earth-Moon distance and the Moon's phase angle on an
+hourly grid, refines each event with its own search, and evaluates each supermoon
+definition from scratch rather than through the package's code.
 """
 
 from functools import cache
 
+import numpy as np
 from skyfield import almanac
-from skyfield.searchlib import find_maxima, find_minima
 
 from supermoon.ephemeris import planets, timescale
 
@@ -19,33 +21,64 @@ def _distance_km(t):
     return (e["moon"] - e["earth"]).at(t).distance().km
 
 
-_distance_km.step_days = 1.0
+def _hourly(year):
+    """an hourly grid from Nov 1 of the prior year through Mar 1 of the next"""
+    ts = timescale()
+    start = ts.utc(year - 1, 11, 1)
+    hours = np.arange(0, (ts.utc(year + 1, 3, 1) - start) * 24)
+    return ts.tt_jd(start.tt + hours / 24)
+
+
+def _refine_extremum(jd, sign):
+    """
+    the extremum of distance within an hour of jd: sample each minute, then fit a
+    parabola through the best sample and its neighbors
+    """
+    ts = timescale()
+    jds = jd + np.arange(-60, 61) / 1440
+    d = _distance_km(ts.tt_jd(jds))
+    i = int(np.argmin(sign * d))
+    y0, y1, y2 = d[i - 1], d[i], d[i + 1]
+    offset = 0.5 * (y0 - y2) / (y0 - 2 * y1 + y2)  # in minutes, from jds[i]
+    t = ts.tt_jd(jds[i] + offset / 1440)
+    return t.utc_datetime(), float(_distance_km(t))
 
 
 @cache
 def apsides(year):
     """perigees and apogees from Nov 1 of the prior year through Mar 1 of the next"""
-    ts = timescale()
-    t0, t1 = ts.utc(year - 1, 11, 1), ts.utc(year + 1, 3, 1)
-    tp, dp = find_minima(t0, t1, _distance_km)
-    ta, da = find_maxima(t0, t1, _distance_km)
-    perigees = [(t.utc_datetime(), float(d)) for t, d in zip(tp, dp, strict=True)]
-    apogees = [(t.utc_datetime(), float(d)) for t, d in zip(ta, da, strict=True)]
-    return perigees, apogees
+    t = _hourly(year)
+    d = _distance_km(t)
+    result = []
+    for sign in (1, -1):  # minima (perigees), then maxima (apogees)
+        s = sign * d
+        idx = np.flatnonzero((s[1:-1] < s[:-2]) & (s[1:-1] <= s[2:])) + 1
+        result.append([_refine_extremum(t.tt[i], sign) for i in idx])
+    return tuple(result)
 
 
 @cache
 def full_moons(year):
     """(datetime, distance km) of every full moon in the calendar year (UTC)"""
     ts = timescale()
-    t, phase = almanac.find_discrete(
-        ts.utc(year, 1, 1), ts.utc(year + 1, 1, 1), almanac.moon_phases(planets())
-    )
-    return [
-        (tt.utc_datetime(), float(_distance_km(tt)))
-        for tt, p in zip(t, phase, strict=True)
-        if p == 2
-    ]
+    eph = planets()
+
+    def past_full(jd):
+        """degrees past full; negative while waxing toward full"""
+        return almanac.moon_phase(eph, ts.tt_jd(jd)).degrees % 360 - 180
+
+    t = _hourly(year)
+    phase = past_full(t.tt)
+    results = []
+    for i in np.flatnonzero((phase[:-1] < 0) & (phase[1:] >= 0)):
+        lo, hi = t.tt[i], t.tt[i + 1]
+        while (hi - lo) * 86400 > 0.01:  # bisect to 10 ms
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if past_full(mid) < 0 else (lo, mid)
+        tt = ts.tt_jd((lo + hi) / 2)
+        if tt.utc_datetime().year == year:
+            results.append((tt.utc_datetime(), float(_distance_km(tt))))
+    return results
 
 
 def evaluate(year):

@@ -9,7 +9,7 @@ from .ephemeris import planets, timescale
 
 def phases(dt, days=30, phases=range(4)):
     """
-
+    lunar phases in the days following dt
     :param dt: datetime to begin search
     :param days: days to search, defaults to 30 to encompass a full lunation
     :param phases: 0=new, 1=first quarter, 2=full, 3=last quarter
@@ -42,16 +42,13 @@ def phases(dt, days=30, phases=range(4)):
 
 def next_full_moon(dt):
     """
-
+    the first full moon after dt
     :param dt: datetime to begin search
-    :return:
+    :return: datetime (UTC), distance in km (geometric, Earth center to Moon center)
+             and apparent angular diameter as a Skyfield Angle
     """
     r_moon = 1737.1  # in km
 
     result = phases(dt, days=30, phases=[2])[0]
-    earth, moon = planets()["earth"], planets()["moon"]
-    moon_observation = earth.at(result["dd"]).observe(moon)
-    _, _, distance = moon_observation.apparent().radec()
-    result["diameter"] = Angle(radians=np.arcsin(r_moon / distance.km) * 2.0)
-
-    return result["dt"], result["d"], result["diameter"]
+    diameter = Angle(radians=np.arcsin(r_moon / result["d"]) * 2.0)
+    return result["dt"], result["d"], diameter

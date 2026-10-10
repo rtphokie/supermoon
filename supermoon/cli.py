@@ -17,6 +17,7 @@ Supermoon definitions used:
 * TimeandDate.com (Norwegian company offering website and data services on
   time and astronomy)- A full Moon within 360,000 kilometres (223,694 mi)
   https://www.timeanddate.com/astronomy/moon/super-full-moon.html
+* Within 1 day of perigee - A full Moon within 24 hours of perigee
 """
 
 
@@ -36,9 +37,11 @@ def main(argv=None):
         type=int,
         nargs="?",
         default=None,
-        help="stop finding supermoons (optional)",
+        help="last year to find supermoons for (optional)",
     )
-    parser.add_argument("--cnt", type=int, default=1, help="moons to show")
+    parser.add_argument(
+        "--cnt", type=int, default=1, help="moons to show (only without a year)"
+    )
     parser.add_argument("-B", "--brief", action="store_true", help="brief output")
     parser.add_argument(
         "-P", "--perigee", action="store_true", help="include perigee time"
@@ -73,8 +76,12 @@ def main(argv=None):
             _write_csv(results)
         return 0
 
+    if args.cnt != 1:
+        parser.error("--cnt cannot be combined with a year")
     if args.endyear is None:
         args.endyear = args.year
+    if args.endyear < args.year:
+        parser.error(f"endyear ({args.endyear}) is before year ({args.year})")
     for year in (args.year, args.endyear):
         if not MIN_YEAR <= year <= MAX_YEAR:
             parser.error(

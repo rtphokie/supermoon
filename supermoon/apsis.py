@@ -1,7 +1,8 @@
-from datetime import UTC, datetime, timedelta
+from datetime import timedelta
 
 from skyfield.searchlib import find_maxima, find_minima
 
+from ._util import as_utc
 from .ephemeris import planets, timescale
 
 
@@ -20,10 +21,7 @@ def next_apsis(dt=None, days=30, extrema="min"):
     :param days: days to search; perigees and apogees are 24.6 to 28.6 days apart
     :return: datetime (UTC) and distance in km
     """
-    if dt is None:
-        dt = datetime.now(UTC)
-    elif dt.tzinfo is None:
-        dt = dt.replace(tzinfo=UTC)
+    dt = as_utc(dt)
     found = apsides(dt, dt + timedelta(days=days), extrema)
     if not found:
         raise ValueError(f"no {extrema} distance found within {days} days of {dt}")

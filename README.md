@@ -37,11 +37,11 @@ usage: supermoon [-h] [--cnt CNT] [-B] [-P] [-D] [-A] [-C] [year] [endyear]
 
 positional arguments:
   year                  find supermoons for this year (optional, defaults to now onward)
-  endyear               stop finding supermoons (optional)
+  endyear               last year to find supermoons for (optional)
 
 options:
   -h, --help            show this help message and exit
-  --cnt CNT             moons to show
+  --cnt CNT             moons to show (only without a year)
   -B, --brief           brief output
   -P, --perigee         include perigee time
   -D, --distance        include distances
@@ -52,7 +52,7 @@ options:
 
 With no arguments, `supermoon` shows the next supermoon from now. Give a year to list every
 supermoon in it, or two years to list every supermoon from the first through the second.
-`--cnt` applies only when no year is given.
+`--cnt` can only be used without a year.
 
 Examples:
 
